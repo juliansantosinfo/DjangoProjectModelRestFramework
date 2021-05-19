@@ -121,6 +121,12 @@ USE_L10N = True
 USE_TZ = True
 
 
+# Defining a primary key type, by default
+# https://docs.djangoproject.com/en/3.2/releases/3.2/#customizing-type-of-auto-created-primary-keys
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
@@ -130,9 +136,11 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'web/static'),
 ]
 
+
 # Django-Admin-Interface
 # https://pypi.org/project/django-admin-interface/
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 
 # DjangoRestFrameWork
 # https://www.django-rest-framework.org/
