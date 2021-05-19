@@ -4,9 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+requests = "*"
 django = "*"
 django-environ = "*"
 djangorestframework = "*"
+django-admin-interface = "*"
 gunicorn = "*"
 whitenoise = "*"
 psycopg2 = "*"
