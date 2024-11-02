@@ -15,39 +15,44 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-# Load .env file.
+# Load environment variables from .env file
+# https://pypi.org/project/python-dotenv/
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", "YOUR SECRETE KEY HERE")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True  # Change to False for production
 
-ALLOWED_HOSTS = ['*',]
+ALLOWED_HOSTS = ['*'] #  Be explicit in production! e.g. ['example.com',]
 
+
+# Cross Site Request Forgery protection
+# https://docs.djangoproject.com/en/5.1/ref/csrf/
 CSRF_TRUSTED_ORIGINS = [
     'http://*.127.0.0.1', 
     'https://*.127.0.0.1', 
     'http://localhost', 
     'https://localhost', 
-]
+] # Be explicit in production!
 
-# django-cors-headers
+
+# django-cors-headers Configuration
 # https://pypi.org/project/django-cors-headers/
-CORS_ORIGENS_PERMITIDAS = []
-CORS_REGEXES_ORIGEM_PERMITIDOS = []
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [] # Use this for specific origins
+CORS_ALLOWED_ORIGIN_REGEXES = [] # Use this for regex matching of origins
+CORS_ALLOW_ALL_ORIGINS = False #  Avoid this in production! Use specific origins or regexes.
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -55,32 +60,36 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Third-party apps
     'django_filters',
     'rest_framework',
-    'rest_framework.authtoken',
-    'dj_rest_auth',
-    'dj_rest_auth.registration',
-    'allauth',
+    'rest_framework.authtoken', # Token authentication
+    'dj_rest_auth', # django-rest-auth
+    'dj_rest_auth.registration', # django-rest-auth registration
+    'allauth', # django-allauth
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.auth0',
+    'allauth.socialaccount.providers.auth0', # Example social providers
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.microsoft',
+    "corsheaders", # django-cors-headers
+
+    # Your apps
     'api',
-    "corsheaders",
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware", # django-cors-headers middleware
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # For serving static files efficiently
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "allauth.account.middleware.AccountMiddleware",
+    "allauth.account.middleware.AccountMiddleware", # django-allauth middleware
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -89,7 +98,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / "web/template/",
+            BASE_DIR / "web/template/", # Custom template directory
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -105,15 +114,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',  # Replace with a suitable database for production
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -133,27 +144,35 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Authentication backends
+# https://docs.djangoproject.com/en/5.1/topics/auth/customizing/#authentication-backends
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
+
+# django-allauth Social Account Providers configuration
+# https://django-allauth.readthedocs.io/en/latest/providers.html
+# Remember to replace placeholders with real client IDs and secrets
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': '123',
-            'secret': '456',
-            'key': ''
+            'client_id': os.environ.get("GOOGLE_CLIENT_ID"), # Use environment variables
+            'secret': os.environ.get("GOOGLE_CLIENT_SECRET"),
+            'key': '' # Not always required
         }
     },
     'microsoft': {
         'APP': {
-            'client_id': '123',
-            'secret': '456',
+            'client_id':  os.environ.get("MICROSOFT_CLIENT_ID"),
+            'secret':  os.environ.get("MICROSOFT_CLIENT_SECRET"),
             'key': ''
         }
     }
 }
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -166,46 +185,54 @@ USE_I18N = True
 
 USE_TZ = True
 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [
+STATIC_ROOT = os.path.join(BASE_DIR, 'static') # Collect static files here for production
+STATICFILES_DIRS = [                   #  Development static files directory
     os.path.join(BASE_DIR, 'web/static'),
 ]
 
-# Media files
+# Media files (User uploaded files)
+# https://docs.djangoproject.com/en/5.1/topics/files/
+
 MEDIA_URL='media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 
+# Localization
+# https://docs.djangoproject.com/en/5.1/topics/i18n/translation/#locale-paths
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'core', 'locale'), 
 ]
 
-# Email
-EMAIL_USE_SSL = eval(os.environ.get("EMAIL_USE_SSL", "False"))
-EMAIL_USE_TLS = eval(os.environ.get("EMAIL_USE_TLS", "True"))
-EMAIL_HOST = os.environ.get("EMAIL_HOST", '')
-EMAIL_PORT = int(os.environ.get("EMAIL_PORT", '587'))
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", '')
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", '')
+# Email Configuration
+# https://docs.djangoproject.com/en/5.1/topics/email/
+EMAIL_USE_SSL = eval(os.environ.get("EMAIL_USE_SSL", "False"))  # Use environment variables
+EMAIL_USE_TLS = eval(os.environ.get("EMAIL_USE_TLS", "True")) # Better to use TLS than SSL if possible
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", '587')) # Default port for TLS
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #  Or another suitable backend
 
-# Django-Admin-Interface
+
+# Django-Admin-Interface (Optional)
 # https://pypi.org/project/django-admin-interface/
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 
-# DjangoRestFrameWork
+# Django REST Framework Configuration
 # https://www.django-rest-framework.org/
+
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
@@ -213,7 +240,9 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissions'
+    'DEFAULT_PERMISSION_CLASSES': [ # Be more restrictive in production as needed.
+        'rest_framework.permissions.DjangoModelPermissions' # Requires login by default
     ],
 }
+
+
