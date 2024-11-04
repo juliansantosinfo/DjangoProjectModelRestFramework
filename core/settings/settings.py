@@ -15,6 +15,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+
 # Load environment variables from .env file
 # https://pypi.org/project/python-dotenv/
 load_dotenv()
@@ -22,21 +23,25 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# https://docs.djangoproject.com/en/5.1/ref/settings/#secret-key
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# https://docs.djangoproject.com/en/5.1/ref/settings/#debug
 DEBUG = True  # Change to False for production
+
+# A list of strings representing the host/domain names that this Django site can serve.
+# https://docs.djangoproject.com/en/5.1/ref/settings/#allowed-hosts
 
 ALLOWED_HOSTS = ['*'] #  Be explicit in production! e.g. ['example.com',]
 
-
 # Cross Site Request Forgery protection
 # https://docs.djangoproject.com/en/5.1/ref/csrf/
+
 CSRF_TRUSTED_ORIGINS = [
     'http://*.127.0.0.1', 
     'https://*.127.0.0.1', 
@@ -47,12 +52,15 @@ CSRF_TRUSTED_ORIGINS = [
 
 # django-cors-headers Configuration
 # https://pypi.org/project/django-cors-headers/
+
 CORS_ALLOWED_ORIGINS = [] # Use this for specific origins
 CORS_ALLOWED_ORIGIN_REGEXES = [] # Use this for regex matching of origins
 CORS_ALLOW_ALL_ORIGINS = False #  Avoid this in production! Use specific origins or regexes.
 
 
 # Application definition
+# https://docs.djangoproject.com/en/5.1/ref/settings/#installed-apps
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -79,6 +87,9 @@ INSTALLED_APPS = [
     'api',
 ]
 
+# A list of middleware to use. See Middleware.
+# https://docs.djangoproject.com/en/5.1/ref/settings/#middleware
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware", # django-cors-headers middleware
     'django.middleware.security.SecurityMiddleware',
@@ -92,7 +103,13 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware", # django-allauth middleware
 ]
 
+# A string representing the full Python import path to your root URLconf, for example "mydjangoapps.urls".
+# https://docs.djangoproject.com/en/5.1/ref/settings/#root-urlconf
+
 ROOT_URLCONF = 'core.urls'
+
+# A list containing the settings for all template engines to be used with Django.
+# https://docs.djangoproject.com/en/5.1/ref/settings/#templates
 
 TEMPLATES = [
     {
@@ -146,6 +163,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Authentication backends
 # https://docs.djangoproject.com/en/5.1/topics/auth/customizing/#authentication-backends
+
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
@@ -155,6 +173,7 @@ AUTHENTICATION_BACKENDS = [
 # django-allauth Social Account Providers configuration
 # https://django-allauth.readthedocs.io/en/latest/providers.html
 # Remember to replace placeholders with real client IDs and secrets
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
@@ -209,12 +228,14 @@ MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 
 # Localization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/translation/#locale-paths
+
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'core', 'locale'), 
 ]
 
 # Email Configuration
 # https://docs.djangoproject.com/en/5.1/topics/email/
+
 EMAIL_USE_SSL = eval(os.environ.get("EMAIL_USE_SSL", "False"))  # Use environment variables
 EMAIL_USE_TLS = eval(os.environ.get("EMAIL_USE_TLS", "True")) # Better to use TLS than SSL if possible
 EMAIL_HOST = os.environ.get("EMAIL_HOST")
@@ -226,6 +247,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #  Or another suit
 
 # Django-Admin-Interface (Optional)
 # https://pypi.org/project/django-admin-interface/
+
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 
